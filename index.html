@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Just_Alex's website</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: system-ui, 'Segoe UI', sans-serif;
+  background: #000;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 2.5rem 1rem 3rem;
+}
+
+#bg {
+  position: fixed;
+  inset: 0;
+  width: 100%; height: 100%;
+  border: none;
+  z-index: 0;
+  pointer-events: none;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(40px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+#panel {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 820px;
+  background: rgba(10,10,10,0.84);
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 16px;
+  overflow: hidden;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 8px 48px rgba(0,0,0,0.75);
+  opacity: 0;
+  animation: slideUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) 1s forwards;
+}
+
+/* HEADER */
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.4rem 2rem 1rem;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.header-left { display: flex; align-items: center; gap: 1rem; }
+
+.avatar {
+  width: 50px; height: 50px;
+  border-radius: 10px;
+  background: #1c1c1c;
+  border: 1px solid rgba(255,255,255,0.13);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.avatar img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.hname { font-size: 22px; font-weight: 700; color: #f0f0f0; }
+.hsub  { font-size: 12px; color: #444; font-family: 'JetBrains Mono', monospace; margin-top: 1px; }
+
+nav { display: flex; gap: 3px; }
+
+nav button {
+  display: flex; align-items: center; gap: 7px;
+  padding: 7px 15px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: #555;
+  font-size: 14px;
+  font-family: inherit;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+nav button:hover { color: #bbb; background: rgba(255,255,255,0.05); }
+nav button.active {
+  color: #eee;
+  background: rgba(255,255,255,0.08);
+  border-color: rgba(255,255,255,0.13);
+}
+nav button .ico { font-size: 14px; line-height: 1; }
+
+/* CONTENT */
+main { padding: 2rem 2rem 2.25rem; }
+.tab { display: none; }
+.tab.active { display: block; }
+
+/* ABOUT */
+.welcome { font-size: 25px; font-weight: 700; color: #f0f0f0; margin-bottom: 0.9rem; }
+
+.about-body {
+  font-size: 15px; line-height: 1.76; color: #999;
+  margin-bottom: 1.6rem;
+}
+.about-body strong { color: #e0e0e0; font-weight: 600; }
+.about-body a { color: #bbb; text-decoration: underline; text-underline-offset: 3px; }
+.about-body a:hover { color: #fff; }
+
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+
+.col h3 { font-size: 15px; font-weight: 700; color: #ccc; margin-bottom: 0.8rem; }
+.col ul { list-style: none; }
+.col li {
+  display: flex; align-items: flex-start; gap: 9px;
+  font-size: 14px; color: #888; padding: 4px 0; line-height: 1.55;
+}
+.col li .i { font-size: 15px; flex-shrink: 0; margin-top: 1px; }
+.col li strong { color: #d0d0d0; }
+.col li a { color: #aaa; text-decoration: underline; text-underline-offset: 3px; }
+.col li a:hover { color: #fff; }
+
+/* SOCIALS */
+.socials-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; }
+
+.scard {
+  display: flex; align-items: center; gap: 12px;
+  padding: 13px 15px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 10px;
+  text-decoration: none;
+  transition: background 0.15s, border-color 0.15s;
+}
+.scard:hover { background: rgba(255,255,255,0.07); border-color: rgba(255,255,255,0.16); }
+.scard.wide { grid-column: 1 / -1; }
+
+.sico { width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.si-icon { width: 22px; height: 22px; display: block; }
+/* Use mask approach so we can color each icon individually */
+.si-mask {
+  width: 22px; height: 22px;
+  display: block;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+}
+.si-tiktok   { background: #fff; -webkit-mask-image: url('https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/tiktok.svg'); mask-image: url('https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/tiktok.svg'); }
+.si-reddit   { background: #FF4500; -webkit-mask-image: url('https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/reddit.svg'); mask-image: url('https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/reddit.svg'); }
+.si-bluesky  { background: #0085FF; -webkit-mask-image: url('https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/bluesky.svg'); mask-image: url('https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/bluesky.svg'); }
+.si-telegram { background: #26A5E4; -webkit-mask-image: url('https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/telegram.svg'); mask-image: url('https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/telegram.svg'); }
+.si-steam    { background: #c6d4df; -webkit-mask-image: url('https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/steam.svg'); mask-image: url('https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/steam.svg'); }
+.si-xbox     { background: #107C10; -webkit-mask-image: url('https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/xbox.svg'); mask-image: url('https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/xbox.svg'); }
+.si-github   { background: #fff; -webkit-mask-image: url('https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/github.svg'); mask-image: url('https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/github.svg'); }
+.si-instagram{ background: #FFFFFF; -webkit-mask-image: url('https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/instagram.svg'); mask-image: url('https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/instagram.svg'); }
+
+.splatform { font-size: 14px; font-weight: 600; color: #ddd; }
+.shandle   { font-size: 12px; color: #555; font-family: 'JetBrains Mono', monospace; margin-top: 1px; }
+.sstat     { font-size: 12px; color: #777; margin-top: 2px; }
+
+/* BLOG */
+.blog-soon {
+  text-align: center;
+  padding: 3.5rem 1rem;
+}
+.blog-soon .big { font-size: 34px; display: block; margin-bottom: 0.75rem; }
+.blog-soon strong { font-size: 16px; color: #555; display: block; margin-bottom: 0.4rem; }
+.blog-soon p { font-size: 13px; color: #3a3a3a; }
+
+/* PROJECTS */
+.projects-list { display: grid; gap: 0.8rem; }
+.pcard {
+  display: block;
+  padding: 13px 16px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 10px;
+  text-decoration: none;
+  transition: background 0.15s, border-color 0.15s;
+}
+.pcard:hover { background: rgba(255,255,255,0.07); border-color: rgba(255,255,255,0.16); }
+.pcard-header { display: flex; align-items: center; gap: 10px; margin-bottom: 5px; }
+.pname { font-size: 14px; font-weight: 600; color: #ddd; }
+.pbadge {
+  font-size: 10px; padding: 1px 8px; border-radius: 99px;
+  font-family: 'JetBrains Mono', monospace; border: 1px solid;
+}
+.pbadge.active { color: #7a7; border-color: #3a5a3a; background: rgba(80,120,80,0.12); }
+.pbadge.disc   { color: #555; border-color: #333; background: transparent; }
+.pdesc { font-size: 13px; color: #777; line-height: 1.6; margin-bottom: 8px; }
+.ptags { display: flex; flex-wrap: wrap; gap: 5px; }
+.ptags span {
+  font-size: 11px; padding: 2px 8px; border-radius: 4px;
+  background: rgba(255,255,255,0.05); color: #666;
+  border: 1px solid rgba(255,255,255,0.08);
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* FOOTER */
+footer {
+  padding: 0.85rem 2rem;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  display: flex; align-items: center; justify-content: space-between;
+  font-size: 11px;
+  color: #333;
+  font-family: 'JetBrains Mono', monospace;
+}
+footer a { color: #444; text-decoration: none; }
+footer a:hover { color: #888; }
+
+@media (max-width: 580px) {
+  header { padding: 1rem 1.2rem; }
+  main   { padding: 1.4rem 1.2rem 1.8rem; }
+  .two-col, .socials-grid { grid-template-columns: 1fr; }
+  .scard.wide { grid-column: auto; }
+  nav button .lbl { display: none; }
+  nav button { padding: 7px 11px; }
+}
+</style>
+</head>
+<body>
+
+<iframe id="bg" src="cubo_nieve.html" title="background"></iframe>
+
+<div id="panel">
+
+  <header>
+    <div class="header-left">
+      <div class="avatar"><img src="mii.png" alt="My Profile Picture"></div>
+      <div>
+        <div class="hname">AlxzndrXP</div>
+        <div class="hsub">personal website</div>
+      </div>
+    </div>
+    <nav>
+      <button class="active" onclick="show('about',this)">
+        <span class="ico">ⓘ</span><span class="lbl">About</span>
+      </button>
+      <button onclick="show('socials',this)">
+        <span class="ico">✆</span><span class="lbl">Socials</span>
+      </button>
+      <button onclick="show('projects',this)">
+        <span class="ico">🖬</span><span class="lbl">Projects</span>
+      </button>
+    </nav>
+  </header>
+
+  <main>
+
+    <!-- ── ABOUT ── -->
+    <div class="tab active" id="tab-about">
+      <h2 class="welcome">Welcome 👋</h2>
+      <p class="about-body">
+        I'm <strong>AlxzndrXP</strong> (also known as <strong>Just_Alex</strong>), an 18-year-old developer with experience in <strong>Python</strong>, <strong>Bash</strong>, <strong>HTML</strong>, and a little bit of <strong>C</strong>.
+        I've been interested in computers since I was 8 years old, and since then I've always been learning something new.<br><br>
+        I tried <strong>Linux</strong> for the first time in 2023 as an experiment and since then I loved it!
+        The only reason I use Linux is because of the customization and the extra fps. I don't really care that much about privacy,
+        but I don't like having <strong>Microslop</strong> spying on me through my webcam. I also develop for <strong>CuerdOS GNU/Linux</strong>
+        and other open-Source proyects.
+      </p>
+
+      <div class="two-col">
+        <div class="col">
+          <h3>My current Setup</h3>
+          <ul>
+            <li><span class="i">&#9635;</span><span><strong>Thinkpad T430s</strong> — i5-3320M, 8 GB RAM, 256 GB SSD<br><small style="color:#555">Bindoj 10 LTSC 2021 + Hackintosh Big Sur</small></span></li>
+            <li><span class="i">&#9635;</span><span><strong>HP Laptop 15-da2xxx</strong> — i3-10110U, 12 GB RAM, 512 GB NVMe<br><small style="color:#555">EndeavourOS + CuerdOS 2.1 Skycatcher</small></span></li>
+            <li><span class="i">&#9635;</span><span><strong>Desktop PC</strong> — i3-7100, 16 GB RAM, 512 GB NVMe, GTX 1050TI OC<br><small style="color:#555">Windows 10 LTSC 2021</small></span></li>
+          </ul>
+        </div>
+        <div class="col">
+          <h3>Some games I like</h3>
+          <ul>
+            <li><span class="i">&#9654;</span><span>Garry's Mod</span></li>
+            <li><span class="i">&#9654;</span><span>Team Fortress 2</span></li>
+            <li><span class="i">&#9654;</span><span>Half-Life 2</span></li>
+            <li><span class="i">&#9654;</span><span>Counter-Strike: Source</span></li>
+            <li><span class="i">&#9654;</span><span>CS:GO</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── SOCIALS ── -->
+    <div class="tab" id="tab-socials">
+      <div class="socials-grid">
+
+        <a class="scard" href="https://www.tiktok.com/@just__alexx0" target="_blank">
+          <div class="sico" style="background:#111">
+            <div class="si-mask si-tiktok"></div>
+          </div>
+          <div>
+            <div class="splatform">TikTok</div>
+            <div class="shandle">@just__alexx0</div>
+            <div class="sstat">246.7K Likes</div>
+          </div>
+        </a>
+
+        <a class="scard" href="https://www.reddit.com/user/Salty-Interaction-79/" target="_blank">
+          <div class="sico" style="background:#1a0800">
+            <div class="si-mask si-reddit"></div>
+          </div>
+          <div>
+            <div class="splatform">Reddit</div>
+            <div class="shandle">u/Salty-Interaction-79</div>
+            <div class="sstat">464 Karma</div>
+          </div>
+        </a>
+
+        <a class="scard" href="https://bsky.app/profile/just--alexx.bsky.social" target="_blank">
+          <div class="sico" style="background:#001628">
+            <div class="si-mask si-bluesky"></div>
+          </div>
+          <div>
+            <div class="splatform">Bluesky</div>
+            <div class="shandle">@just--alexx.bsky.social</div>
+            <div class="sstat">6 Followers</div>
+          </div>
+        </a>
+
+        <a class="scard" href="https://t.me/Just_Alexz" target="_blank">
+          <div class="sico" style="background:#001520">
+            <div class="si-mask si-telegram"></div>
+          </div>
+          <div>
+            <div class="splatform">Telegram</div>
+            <div class="shandle">@Just_Alexz</div>
+          </div>
+        </a>
+
+        <a class="scard" href="https://steamcommunity.com/id/AlxzndrXP/" target="_blank">
+          <div class="sico" style="background:#0d1b2e">
+            <div class="si-mask si-steam"></div>
+          </div>
+          <div>
+            <div class="splatform">Steam</div>
+            <div class="shandle">AlxzndrXP</div>
+          </div>
+        </a>
+        
+
+        <a class="scard" href="https://account.xbox.com/en-us/profile?gamertag=AlxndrXP911" target="_blank">
+          <div class="sico" style="background:#0a1a0a">
+            <div class="si-mask si-xbox"></div>
+          </div>
+          <div>
+            <div class="splatform">Xbox</div>
+            <div class="shandle">AlxndrXP911</div>
+          </div>
+        </a>
+
+        <a class="scard" href="https://github.com/Just-Alex22" target="_blank">
+          <div class="sico" style="background:#111">
+            <div class="si-mask si-github"></div>
+          </div>
+          <div>
+            <div class="splatform">GitHub</div>
+            <div class="shandle">Just-Alex22</div>
+            <div class="sstat">CuerdOS developer</div>
+          </div>
+        </a>
+
+        <a class="scard" href="https://www.instagram.com/just_alex2026/" target="_blank">
+          <div class="sico" style="background:#24101C">
+            <div class="si-mask si-instagram"></div>
+          </div>
+          <div>
+            <div class="splatform">Instagram</div>
+            <div class="shandle">just_alex2026</div>
+          </div>
+        </a>
+        
+      </div>
+    </div>
+
+    <!-- ── PROJECTS ── -->
+    <div class="tab" id="tab-projects">
+      <div class="projects-list">
+
+        <a class="pcard" href="https://github.com/Just-Alex22/VoidBox-ISO-Customizer" target="_blank">
+          <div class="pcard-header">
+            <span class="pname">VoidBox</span>
+            <span class="pbadge active">active</span>
+          </div>
+          <p class="pdesc">Create your own Void Linux custom ISO easily. Just like Cubic. but for Void</p>
+          <div class="ptags"><span>Python+C</span><span>PySide6</span><span>Void Linux</span></div>
+        </a>
+        
+        <a class="pcard" href="https://github.com/Just-Alex22/Yelena-Connect" target="_blank">
+          <div class="pcard-header">
+            <span class="pname">Yelena Connect</span>
+            <span class="pbadge active">active</span>
+          </div>
+          <p class="pdesc">Control your Linux PC from your Android phone over Wi-Fi. Bidirectional clipboard sync, virtual keyboard input, GTK3 tray applet + Kotlin companion app.</p>
+          <div class="ptags"><span>Python</span><span>GTK3</span><span>Kotlin</span><span>Android</span></div>
+        </a>
+
+        <a class="pcard" href="https://github.com/cuerdos/k-tasks" target="_blank">
+          <div class="pcard-header">
+            <span class="pname">K-Tasks</span>
+            <span class="pbadge active">active</span>
+          </div>
+          <p class="pdesc">A lightweight task manager designed for CuerdOS. Minimal, native-looking and fast.</p>
+          <div class="ptags"><span>Python</span><span>Qt 6</span><span>CuerdOS</span></div>
+        </a>
+
+        <a class="pcard" href="https://github.com/Just-Alex22/ConkyMan" target="_blank">
+          <div class="pcard-header">
+            <span class="pname">ConkyMan</span>
+            <span class="pbadge active">active</span>
+          </div>
+          <p class="pdesc">A customization tool for Yelena Conky. Easily configure and personalize your Conky setup on CuerdOS.</p>
+          <div class="ptags"><span>Python</span><span>Conky</span><span>CuerdOS</span></div>
+        </a>
+
+      </div>
+    </div>
+
+  </main>
+
+  <footer>
+    <span>&copy; 2026 <a href="#">Just_Alex</a></span>
+    <span><a href="https://enderman.ch/" target="_blank">Inspired of endermanch's website</a></span>
+  </footer>
+
+</div>
+
+<script>
+function show(id, btn) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  btn.classList.add('active');
+}
+</script>
+
+</body>
+</html>
